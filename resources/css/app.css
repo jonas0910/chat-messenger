@@ -1,3 +1,27 @@
+/* resources/css/app.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Modo claro */
+body {
+  @apply bg-white text-gray-900;
+}
+
+/* Modo oscuro */
+.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
+
+/* Configura el fondo oscuro y el texto para los elementos globales */
+.dark .bg-white {
+  @apply bg-gray-800;
+}
+
+.dark .text-gray-900 {
+  @apply text-gray-100;
+}
+
+#app{
+  height: 100vh;
+}
