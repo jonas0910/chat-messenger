@@ -1,24 +1,57 @@
 import ConversationHeader from "@/Components/App/ConversationHeader";
+import MessageInput from "@/Components/App/MessageInput";
 import MessageItem from "@/Components/App/MessageItem";
+import { useEventBus } from "@/EventBus";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import ChatLayout from "@/Layouts/ChatLayout";
+import { Conversation } from "@/types/conversation";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/16/solid";
 import { useEffect, useRef, useState } from "react";
 
 interface HomeProps {
-    selectedConversation: any; // Replace 'any' with the appropriate type if known
+    selectedConversation: Conversation | null; // Replace 'any' with the appropriate type if known
     messages: any; // Replace 'any' with the appropriate type if known
 }
 
 function Home({ selectedConversation = null, messages = null }: HomeProps) {
     const [localMessages, setLocalMessages] = useState(messages);
     const messagesCtrRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-      setTimeout(() => {
-        if (messagesCtrRef.current) {
-            messagesCtrRef.current.scrollTop = messagesCtrRef.current.scrollHeight;
+
+    const { on } = useEventBus();
+    const messageCreated = (message: any) => {
+        if (
+            selectedConversation &&
+            selectedConversation.is_group &&
+            selectedConversation.id === message.group_id
+        ) {
+            setLocalMessages((prevMessages: any) => {
+                return [message, ...prevMessages];
+            });
         }
-      }, 10);
+        if (
+            selectedConversation &&
+            selectedConversation.is_user &&
+            (selectedConversation.id === message.sender_id ||
+                selectedConversation.id == message.receiver_id)
+        ) {
+            setLocalMessages((prevMessages: any) => {
+                return [message, ...prevMessages];
+            });
+        }
+    };
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (messagesCtrRef.current) {
+                messagesCtrRef.current.scrollTop =
+                    messagesCtrRef.current.scrollHeight;
+            }
+        }, 10);
+
+        const offCreated = on("message.created", messageCreated);
+        return () => {
+            offCreated();
+        };
     }, [selectedConversation]);
     useEffect(() => {
         setLocalMessages(messages ? messages.data.reverse() : []);
@@ -41,7 +74,7 @@ function Home({ selectedConversation = null, messages = null }: HomeProps) {
                     <div
                         ref={messagesCtrRef}
                         className="flex-1 p-5 overflow-y-auto"
-                        style={{ height: "calc(100vh - 164px)" }}
+                        style={{ height: "calc(100vh - 200px)" }}
                     >
                         {localMessages.length === 0 && (
                             <div className="flex justify-center items-center h-full ">
@@ -61,7 +94,7 @@ function Home({ selectedConversation = null, messages = null }: HomeProps) {
                             </div>
                         )}
                     </div>
-                    {/* <MessageInput conversation={selectedConversation}/> */}
+                    <MessageInput conversation={selectedConversation} />
                 </>
             )}
         </>

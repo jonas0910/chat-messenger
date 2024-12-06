@@ -111,9 +111,9 @@ const ChatLayout = ({ children }: ChatLayoutProps) => {
                         {sortedConversations &&
                             sortedConversations.map((conversation: any) => (
                                 <ConversationItem
-                                    key={`${
-                                        conversation.is_group ? "group" : "user"
-                                    }${conversation.id}`}
+                                    // key={`${
+                                    //     conversation.is_group ? "group" : "user"
+                                    // }${conversation.id}`}
                                     conversation={conversation}
                                     isUserOnline={!!isUserOnline(conversation.id)}
                                     selectedConversation={selectedConversation}

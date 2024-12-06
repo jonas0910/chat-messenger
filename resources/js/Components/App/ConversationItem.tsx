@@ -5,14 +5,13 @@ import UserOptionsDropdown from "./UserOptionsDropdown";
 import { Link, usePage } from "@inertiajs/react";
 
 interface ConversationItemProps {
-    key: string;
     conversation: any;
     selectedConversation: any;
     isUserOnline: boolean;
 }
 
 const ConversationItem = (
-    { key, conversation, selectedConversation, isUserOnline }: ConversationItemProps
+    { conversation, selectedConversation, isUserOnline }: ConversationItemProps
 ) => {
     const page = usePage();
     const currentUser = page.props.auth.user as any;
