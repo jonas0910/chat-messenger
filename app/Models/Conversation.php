@@ -30,13 +30,13 @@ class Conversation extends Model
     {
         $users = User::getUsersExceptUser($user);
         $groups = Group::getGroupsForUser($user);
-        return $users->map(
+        return $groups->map(function (Group $group) {
+            return $group->toConversationArray();
+        })->concat($users->map(
             function (User $user) {
                 return $user->toConversationArray();
             }
-        )->concat($groups->map(function (Group $group) {
-            return $group->toConversationArray();
-        }));
+        ));
     }
 
     public static function updateConversationWithMessage($userId1,$userId2,$message)

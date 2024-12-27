@@ -77,21 +77,21 @@ class MessageController extends Controller
         
 
         // $message = Message::create($data);
-        \Log::info('Inicio de store message');
-    \Log::info('Datos validados:', $request->validated());
+        Log::info('Inicio de store message');
+    Log::info('Datos validados:', $request->validated());
 
     $data = $request->validated(); 
     $data['sender_id'] = auth()->id(); 
     
     $receiverId = $data['receiver_id'] ?? null;
     $groupId = $data['group_id'] ?? null;
-    \Log::info('Data a insertar:', $data);
+    Log::info('Data a insertar:', $data);
 
     try {
         $message = Message::create($data); 
-        \Log::info('Mensaje creado:', $message->toArray());
+        Log::info('Mensaje creado:', $message->toArray());
     } catch (\Exception $e) {
-        \Log::error('Error al crear mensaje:', [$e->getMessage()]);
+        Log::error('Error al crear mensaje:', [$e->getMessage()]);
         throw $e;
     }
     $files = $data['attachments'] ?? [];

@@ -58,7 +58,7 @@ class User extends Authenticatable
         $userId = $user->id;
         $query = User::select([
             'users.*',
-            'messages.id as last_message',
+            'messages.message as last_message',
             'messages.created_at as last_message_date',
         ])->where('users.id','!=',$userId)
         ->when(!$user->is_admin, function ($query)  {
@@ -92,7 +92,7 @@ class User extends Authenticatable
             'updated_at' => $this->updated_at,
             'blocked_at' => $this->blocked_at,
             'last_message' => $this->last_message,
-            'last_message_date' => $this->last_message_date,
+            'last_message_date' => $this->last_message_date ? $this->last_message_date . ' UTC' : null
         ];
     }
 }

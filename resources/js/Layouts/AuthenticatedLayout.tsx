@@ -4,6 +4,7 @@ import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { useEventBus } from "@/EventBus"; // Ensure useEventBus returns an object with emit function
 import { Conversation } from "@/types/conversation";
+import { Message } from "@/types/messages";
 import { Link, usePage } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 
@@ -36,10 +37,10 @@ export default function Authenticated({
                 .error((error: any) => {
                     console.error(error);
                 })
-                .listen("SocketMessage", (event: { message: any; }) => {
+                .listen("SocketMessage", (event: { message: Message; }) => {
                     console.log(event);
                     const message = event.message;
-                    emit("message.create", message);
+                    emit("message.created", message);
                     if(message.sender_id === user.id){
                         return;
                     }
