@@ -13,7 +13,7 @@ const ConversationHeader = ({ selectedConversation }: ConversationHeaderProps) =
 	return (
 		<div>
       {selectedConversation && (
-				<div className="p-3 flex justify-between items-center border-b border-slate-700">
+				<div className=" z-50 p-3 absolute left-0 right-0 bg-black justify-between items-center border-b border-slate-700" >
 					<div className="flex items-center gap-3">
 						<Link
 							href={route('dashboard')}

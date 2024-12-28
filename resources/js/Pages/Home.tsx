@@ -17,8 +17,6 @@ interface HomeProps {
     messages: MessageGet | null; // Replace 'any' with the appropriate type if known
 }
 
-
-
 function Home({ selectedConversation = null, messages = null }: HomeProps) {
     const [noMoreMessages, setNoMoreMessages] = useState(false);
     const [scrollFromBottom, setScrollFromBottom] = useState<number | null>(
@@ -28,8 +26,12 @@ function Home({ selectedConversation = null, messages = null }: HomeProps) {
     const [localMessages, setLocalMessages] = useState<Message[]>([]);
     const messagesCtrRef = useRef<HTMLDivElement>(null);
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
-    const defaultAttachment: PreviewAttachment = { attachments: null, index: null };
-    const [previewAttachment, setPreviewAttachment] = useState<PreviewAttachment>(defaultAttachment);
+    const defaultAttachment: PreviewAttachment = {
+        attachments: null,
+        index: null,
+    };
+    const [previewAttachment, setPreviewAttachment] =
+        useState<PreviewAttachment>(defaultAttachment);
 
     const { on } = useEventBus();
     const messageCreated = (message: Message) => {
@@ -139,6 +141,96 @@ function Home({ selectedConversation = null, messages = null }: HomeProps) {
         };
     }, [localMessages]);
     return (
+        // <>
+        //     <div className="h-3/4 flex flex-col bg-gray-100">
+        //         {/* Nombre (Siempre visible) */}
+        //         <div className="bg-blue-500 text-white p-4">
+        //             Aquí va el nombre, esto siempre se muestra
+        //         </div>
+
+        //         {/* Mensajes (Cambia de tamaño dinámicamente) */}
+        //         <div className="flex-1 overflow-y-auto p-4">
+        //             {/* Aquí irán los mensajes */}
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Hola, ¿cómo estás?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 ¡Todo bien! ¿Y tú?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Estoy bien, gracias.
+        //             </div>
+        //             {/* Aquí irán los mensajes */}
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Hola, ¿cómo estás?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 ¡Todo bien! ¿Y tú?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Estoy bien, gracias.
+        //             </div>
+        //             {/* Aquí irán los mensajes */}
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Hola, ¿cómo estás?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 ¡Todo bien! ¿Y tú?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Estoy bien, gracias.
+        //             </div>
+        //             {/* Aquí irán los mensajes */}
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Hola, ¿cómo estás?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 ¡Todo bien! ¿Y tú?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Estoy bien, gracias.
+        //             </div>
+        //             {/* Aquí irán los mensajes */}
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Hola, ¿cómo estás?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 ¡Todo bien! ¿Y tú?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Estoy bien, gracias.
+        //             </div>
+        //             {/* Aquí irán los mensajes */}
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Hola, ¿cómo estás?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 ¡Todo bien! ¿Y tú?
+        //             </div>
+        //             <div className="bg-gray-200 p-2 mb-2 rounded">
+        //                 Estoy bien, gracias.
+        //             </div>
+        //         </div>
+
+        //         {/* Input (Crece hacia arriba cuando se escribe) */}
+        //         <div className="bg-gray-200 p-4">
+        //             <textarea
+        //                 id="input"
+        //                 className="w-full resize-none overflow-hidden bg-white text-black p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        //                 rows={1}
+        //                 placeholder="Escribe un mensaje..."
+        //                 onInput={(e) => {
+        //                     // Ajustar dinámicamente el alto del textarea
+        //                     (e.target as HTMLTextAreaElement).style.height =
+        //                         "auto";
+        //                     (e.target as HTMLTextAreaElement).style.height = `${
+        //                         (e.target as HTMLTextAreaElement).scrollHeight
+        //                     }px`;
+        //                 }}
+        //             ></textarea>
+        //         </div>
+        //     </div>
+        // </>
         <>
             {!messages && (
                 <div className="flex flex-col gap-8 justify-center items-center text-center h-full opacity-35">
@@ -150,38 +242,40 @@ function Home({ selectedConversation = null, messages = null }: HomeProps) {
             )}
             {messages && (
                 <>
-                    <ConversationHeader
-                        selectedConversation={selectedConversation}
-                    />
-                    <div
-                        ref={messagesCtrRef}
-                        className="flex-1 p-5 overflow-y-auto"
-                        style={{ height: "calc(100vh - 200px)" }}
-                    >
-                        {localMessages?.length === 0 && (
-                            <div className="flex justify-center items-center h-full ">
-                                <div className="text-lg text-slate-200">
-                                    No messages found
+                    <div className="h-[calc(100vh-50px)] flex flex-col relative">
+                        <ConversationHeader
+                            selectedConversation={selectedConversation}
+                        />
+                        <div
+                            ref={messagesCtrRef}
+                            // className=" p-5 overflow-y-auto max-h-[calc(100vh-180px)] "
+                            className="flex-1 max-h-[calc(100vh-180px)]  overflow-y-auto p-4"
+                        >
+                            {localMessages?.length === 0 && (
+                                <div className="flex justify-center items-center h-full ">
+                                    <div className="text-lg text-slate-200">
+                                        No messages found
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                        {localMessages?.length > 0 && (
-                            <div className="flex-1 flex flex-col ">
-                                <div
-                                    ref={loadMoreIntersect}
-                                    style={{ height: "1px" }}
-                                ></div>
-                                {localMessages.map((message: Message) => (
-                                    <MessageItem
-                                        key={message.id}
-                                        message={message}
-                                        attachmentClick={onAttachmentClick}
-                                    />
-                                ))}
-                            </div>
-                        )}
+                            )}
+                            {localMessages?.length > 0 && (
+                                <div className="flex-1 flex flex-col ">
+                                    <div
+                                        ref={loadMoreIntersect}
+                                        style={{ height: "1px" }}
+                                    ></div>
+                                    {localMessages.map((message: Message) => (
+                                        <MessageItem
+                                            key={message.id}
+                                            message={message}
+                                            attachmentClick={onAttachmentClick}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <MessageInput conversation={selectedConversation} />
                     </div>
-                    <MessageInput conversation={selectedConversation} />
                 </>
             )}
             {previewAttachment.attachments && (

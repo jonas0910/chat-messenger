@@ -112,7 +112,7 @@ const MessageInput = ({ conversation = null }: { conversation: any }) => {
     };
 
     return (
-        <div className="flex flex-wrap items-start border-t border-slate-700 py-3">
+        <div className="flex flex-wrap items-start border-t border-slate-700 py-3 ">
             <div className="order-2 flex-1 xs:flex-none xs:order-1 p-2">
                 <button className="p-1 text-gray-400 hover:text-gray-300 relative">
                     <PaperClipIcon className="w-6" />
@@ -153,13 +153,13 @@ const MessageInput = ({ conversation = null }: { conversation: any }) => {
                         <span className="hidden sm:inline">Send</span>
                     </button>
                 </div>
-                {uploadProgress != 0 && (
+                {/* {uploadProgress != 0 && (
                     <progress
                         className="prosgress progress-info w-full"
                         value={uploadProgress}
                         max={100}
                     ></progress>
-                )}
+                )} */}
                 {inputErrorMessage && (
                     <p className="text-xs text-red-400">{inputErrorMessage}</p>
                 )}
