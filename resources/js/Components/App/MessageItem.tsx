@@ -2,22 +2,16 @@ import { usePage } from "@inertiajs/react";
 import ReactMarkdown from "react-markdown";
 import UserAvatar from "./UserAvatar";
 import { formatMessageDateLong } from "@/helpers";
-
-interface Message {
-    sender_id: number;
-    sender: {
-        name: string;
-    };
-    created_at: string;
-    message: string;
-}
+import { Message } from "@/types/messages";
+import MessageAttachments from "./MessageAttachments";
+import { Attachment, PreviewAttachment } from "@/types/attachment";
 
 interface MessageItemProps {
     message: Message;
-    attachmentClick?: () => void;
+    attachmentClick: (attachment: Attachment, index: number) => void;
 }
 
-const MessageItem: React.FC<MessageItemProps> = ({ message, attachmentClick }) => {
+const MessageItem = ({ message, attachmentClick } : MessageItemProps) => {
     const currentUser = usePage().props.auth.user;
     return (
         <div
@@ -52,8 +46,11 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, attachmentClick }) =
                     <div className="chat-message-content">
                         <ReactMarkdown>{message.message}</ReactMarkdown>
                     </div>
+                    <MessageAttachments 
+                        attachments={message.attachments}
+                        attachmentClick={attachmentClick}
+                    />
                 </div>
-
             </div>
         </div>
     );

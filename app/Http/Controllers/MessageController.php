@@ -9,10 +9,11 @@ use App\Models\User;
 use App\Models\Group;
 use App\Models\MessageAttachment;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Models\Conversation;
 use App\Events\SocketMessage;
-use App\Http\Resources\StoreMessageRequest;
+use App\Http\Requests\StoreMessageRequest;
 
 class MessageController extends Controller
 {
@@ -44,16 +45,16 @@ class MessageController extends Controller
     }
 
 
-    public function loadOlder(Message $message) 
+    public function loadOlder(Message $message)
     {
-        if($message->group_id){
+        if ($message->group_id) {
             $messages = Message::where('created_at', '<', $message->created_at)
                 ->where('group_id', $message->group_id)
                 ->latest()
                 ->paginate(50);
-        }else{
+        } else {
             $messages = Message::where('created_at', '<', $message->created_at)
-                ->where(function($query) use ($message){
+                ->where(function ($query) use ($message) {
                     $query->where('sender_id', $message->sender_id)
                         ->where('receiver_id', $message->receiver_id)
                         ->orWhere('sender_id', $message->receiver_id)
@@ -68,18 +69,36 @@ class MessageController extends Controller
 
     public function store(StoreMessageRequest $request)
     {
-        $data = $request->validated();
-        $data['sender_id'] = auth()->id();
-        $receiverId = $data['receiver_id'] ?? null;
-        $groupId = $data['group_id'] ?? null;
 
-        $files = $data['attachments'] ?? [];
+        // $data = $request->validated();
+        // $data['sender_id'] = auth()->id();
 
-        $message = Message::create($data);
+
+        
+
+        // $message = Message::create($data);
+        Log::info('Inicio de store message');
+    Log::info('Datos validados:', $request->validated());
+
+    $data = $request->validated(); 
+    $data['sender_id'] = auth()->id(); 
+    
+    $receiverId = $data['receiver_id'] ?? null;
+    $groupId = $data['group_id'] ?? null;
+    Log::info('Data a insertar:', $data);
+
+    try {
+        $message = Message::create($data); 
+        Log::info('Mensaje creado:', $message->toArray());
+    } catch (\Exception $e) {
+        Log::error('Error al crear mensaje:', [$e->getMessage()]);
+        throw $e;
+    }
+    $files = $data['attachments'] ?? [];
 
         $attachments = [];
 
-        if($files){
+        if ($files) {
             foreach ($files as $file) {
                 $directory = 'attachments/' . Str::random(32);
                 Storage::makeDirectory($directory);
@@ -96,12 +115,12 @@ class MessageController extends Controller
             }
             $message->attachments = $attachments;
         }
-        if($receiverId){
+        if ($receiverId) {
             Conversation::updateConversationWithMessage($receiverId, auth()->id(), $message);
         }
 
-        if($groupId){
-            Group::updateGroupWitMessage($groupId, $message);
+        if ($groupId) {
+            Group::updateGroupWithMessage($groupId, $message);
         }
 
         SocketMessage::dispatch($message);
@@ -111,7 +130,7 @@ class MessageController extends Controller
 
     public function destroy(Message $message)
     {
-        if($message->sender_id !== auth()->id()){
+        if ($message->sender_id !== auth()->id()) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 

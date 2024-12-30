@@ -3,16 +3,18 @@ import UserAvatar from "./UserAvatar";
 import GroupAvatar from "./GroupAvatar";
 import UserOptionsDropdown from "./UserOptionsDropdown";
 import { Link, usePage } from "@inertiajs/react";
+import { formatMessageDateShort } from "@/helpers";
+import { Conversation } from "@/types/conversation";
+import { GenericRouteParamsObject, RouteParams } from "../../../../vendor/tightenco/ziggy/src/js";
 
 interface ConversationItemProps {
-    key: string;
-    conversation: any;
-    selectedConversation: any;
+    conversation: Conversation;
+    selectedConversation: Conversation;
     isUserOnline: boolean;
 }
 
 const ConversationItem = (
-    { key, conversation, selectedConversation, isUserOnline }: ConversationItemProps
+    { conversation, selectedConversation, isUserOnline }: ConversationItemProps
 ) => {
     const page = usePage();
     const currentUser = page.props.auth.user as any;
@@ -29,8 +31,8 @@ const ConversationItem = (
         <Link
             href={
                 conversation.is_group ?
-                route("chat.group", conversation) :
-                route("chat.user", conversation)
+                route("chat.group", { id: conversation.id }) :
+                route("chat.user", { id: conversation.id })
             }
             preserveState
             className={"conversation-item flex items-center gap-2 p-2 text-gray-300 transition-all cursor-pointer border-l-4 hover:bg-black/30" +
@@ -62,7 +64,10 @@ const ConversationItem = (
                     </h3>
                     {conversation.last_message_date && (
                         <span className="text-nowrap">
-                            {conversation.last_message_date}
+                            {/* {conversation.last_message_date} */}
+                            {
+                                formatMessageDateShort(conversation.last_message_date)
+                            }
                         </span>
                     )}
                 </div>

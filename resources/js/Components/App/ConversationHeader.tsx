@@ -2,22 +2,18 @@ import { ArrowLeftIcon } from "@heroicons/react/16/solid"
 import { Link } from "@inertiajs/react"
 import UserAvatar from "./UserAvatar"
 import GroupAvatar from "./GroupAvatar"
+import { Conversation } from "@/types/conversation";
 
 type ConversationHeaderProps = {
-	selectedConversation: {
-		is_user: boolean;
-		is_group: boolean;
-		name: string;
-		users: { length: number };
-	};
+	selectedConversation: Conversation | null;
 };
 
 const ConversationHeader = ({ selectedConversation }: ConversationHeaderProps) => {
 	
 	return (
-		<>
-			{selectedConversation && (
-				<div className="p-3 flex justify-between items-center border-b border-slate-700">
+		<div>
+      {selectedConversation && (
+				<div className=" z-50 p-3 absolute left-0 right-0 bg-black justify-between items-center border-b border-slate-700" >
 					<div className="flex items-center gap-3">
 						<Link
 							href={route('dashboard')}
@@ -41,9 +37,10 @@ const ConversationHeader = ({ selectedConversation }: ConversationHeaderProps) =
 						</div>
 					</div>
 				</div>
-			)}
-		</>
-	)
+			)
+		}
+    </div>
+	);
 }
 
 export default ConversationHeader;
